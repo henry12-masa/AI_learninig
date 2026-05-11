@@ -2,160 +2,420 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI学習クイズ</title>
+
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f4f7fb;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
+    body{
+      font-family:sans-serif;
+      background:#f4f7fb;
+      margin:0;
+      padding:20px;
+      text-align:center;
     }
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background: white;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    .container{
+      max-width:700px;
+      margin:auto;
+      background:white;
+      padding:25px;
+      border-radius:16px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.12);
     }
 
-    h1 {
-      color: #2563eb;
+    h1{
+      color:#2563eb;
     }
 
-    .question {
-      font-size: 22px;
-      font-weight: bold;
-      margin: 25px 0;
+    .question{
+      font-size:24px;
+      font-weight:bold;
+      margin:25px 0;
     }
 
-    .choices button {
-      display: block;
-      width: 100%;
-      margin: 12px 0;
-      padding: 14px;
-      font-size: 17px;
-      border: none;
-      border-radius: 10px;
-      background: #e5e7eb;
-      cursor: pointer;
-      transition: 0.2s;
+    .choices button{
+      display:block;
+      width:100%;
+      margin:12px 0;
+      padding:15px;
+      font-size:17px;
+      border:none;
+      border-radius:10px;
+      background:#e5e7eb;
+      cursor:pointer;
+      transition:0.2s;
     }
 
-    .choices button:hover {
-      background: #bfdbfe;
+    .choices button:hover{
+      background:#bfdbfe;
     }
 
-    .correct {
-      background: #22c55e !important;
-      color: white;
+    .correct{
+      background:#22c55e !important;
+      color:white;
     }
 
-    .wrong {
-      background: #ef4444 !important;
-      color: white;
+    .wrong{
+      background:#ef4444 !important;
+      color:white;
     }
 
-    #nextBtn, #restartBtn {
-      margin-top: 20px;
-      padding: 12px 25px;
-      font-size: 17px;
-      border: none;
-      border-radius: 10px;
-      background: #2563eb;
-      color: white;
-      cursor: pointer;
-      display: none;
+    #nextBtn,
+    #restartBtn{
+      margin-top:20px;
+      padding:12px 25px;
+      font-size:17px;
+      border:none;
+      border-radius:10px;
+      background:#2563eb;
+      color:white;
+      cursor:pointer;
+      display:none;
     }
 
-    .score {
-      margin-top: 15px;
-      font-size: 18px;
-      font-weight: bold;
+    .score{
+      margin-top:10px;
+      font-size:18px;
+      font-weight:bold;
     }
 
-    .ad {
-      margin: 25px auto;
-      padding: 20px;
-      background: #f1f5f9;
-      border: 2px dashed #94a3b8;
-      border-radius: 12px;
-      color: #64748b;
+    #resultMessage{
+      margin-top:20px;
+      font-size:28px;
+      font-weight:bold;
+      min-height:40px;
+    }
+
+    .success{
+      color:#16a34a;
+    }
+
+    .fail{
+      color:#dc2626;
+    }
+
+    .ad{
+      margin:25px auto;
+      padding:20px;
+      background:#f1f5f9;
+      border:2px dashed #94a3b8;
+      border-radius:12px;
+      color:#64748b;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>AI学習クイズ</h1>
+<div class="container">
 
-    <div class="ad">広告エリア</div>
+  <h1>AI学習クイズ</h1>
 
-    <div id="quizBox">
-      <div class="score" id="scoreText">スコア：0</div>
-      <div class="question" id="question">問題文</div>
-      <div class="choices" id="choices"></div>
-      <button id="nextBtn">次の問題へ</button>
-      <button id="restartBtn">もう一度遊ぶ</button>
-    </div>
+  <div class="ad">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8398161859137802"
+     crossorigin="anonymous"></script>
+<!-- チェス -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-8398161859137802"
+     data-ad-slot="5599163841"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
   </div>
 
+  <div class="score" id="scoreText">
+    スコア：0
+  </div>
+
+  <div class="question" id="question">
+    問題文
+  </div>
+
+  <div class="choices" id="choices"></div>
+
+  <div id="resultMessage"></div>
+
+  <button id="nextBtn">
+    次の問題へ
+  </button>
+
+  <button id="restartBtn">
+    もう一度遊ぶ
+  </button>
+
+</div>
+
 <script>
-const quizData = [
+
+const allQuizData = [
+
   {
-    question: "AIとは何の略？",
-    choices: ["Artificial Intelligence", "Auto Internet", "Active Information", "Animal Intelligence"],
-    answer: "Artificial Intelligence"
+    question:"AIとは何の略？",
+    choices:["Artificial Intelligence","Auto Internet","Active Item","Animal Information"],
+    answer:"Artificial Intelligence"
   },
+
   {
-    question: "機械学習とは何？",
-    choices: ["人間がすべて命令する仕組み", "データからパターンを学ぶ仕組み", "電気を節約する技術", "画像を保存する方法"],
-    answer: "データからパターンを学ぶ仕組み"
+    question:"AIに指示を出す文章を何という？",
+    choices:["プロンプト","パスワード","URL","コード"],
+    answer:"プロンプト"
   },
+
   {
-    question: "ChatGPTのようなAIは主に何を扱う？",
-    choices: ["文章", "燃料", "天気だけ", "建築材料"],
-    answer: "文章"
+    question:"ChatGPTが得意なことは？",
+    choices:["文章生成","洗濯","料理","掃除"],
+    answer:"文章生成"
   },
+
   {
-    question: "AIに指示を出す文章を何という？",
-    choices: ["プロンプト", "パスワード", "ブラウザ", "ファイル"],
-    answer: "プロンプト"
+    question:"画像を作るAIを何という？",
+    choices:["画像生成AI","電卓AI","掃除AI","交通AI"],
+    answer:"画像生成AI"
   },
+
   {
-    question: "教師あり学習で使うものは？",
-    choices: ["正解付きデータ", "電池", "地図だけ", "音楽プレイヤー"],
-    answer: "正解付きデータ"
+    question:"AIが学習するために必要なものは？",
+    choices:["データ","砂","石","水"],
+    answer:"データ"
   },
+
   {
-    question: "画像認識AIができることは？",
-    choices: ["画像の中身を判断する", "料理を実際に作る", "電車を運転する", "水を作る"],
-    answer: "画像の中身を判断する"
+    question:"AIが間違った情報を出す現象は？",
+    choices:["ハルシネーション","ログイン","キャッシュ","スクロール"],
+    answer:"ハルシネーション"
   },
+
   {
-    question: "生成AIとは？",
-    choices: ["新しい文章や画像などを作るAI", "電卓だけのAI", "保存専用ソフト", "時計"],
-    answer: "新しい文章や画像などを作るAI"
+    question:"機械学習とは？",
+    choices:[
+      "データから学ぶ技術",
+      "機械を洗うこと",
+      "電気を作ること",
+      "建物を作ること"
+    ],
+    answer:"データから学ぶ技術"
   },
+
   {
-    question: "AIの学習に多く必要なものは？",
-    choices: ["データ", "砂糖", "紙コップ", "鉛筆だけ"],
-    answer: "データ"
+    question:"生成AIができることは？",
+    choices:[
+      "文章や画像を作る",
+      "空を飛ぶ",
+      "雨を止める",
+      "時間を戻す"
+    ],
+    answer:"文章や画像を作る"
   },
+
   {
-    question: "AIが間違った情報を本当のように答えることを何という？",
-    choices: ["ハルシネーション", "ログイン", "ダウンロード", "スクロール"],
-    answer: "ハルシネーション"
+    question:"AIに大量のデータを与える目的は？",
+    choices:[
+      "学習させるため",
+      "重くするため",
+      "壊すため",
+      "色を変えるため"
+    ],
+    answer:"学習させるため"
   },
+
   {
-    question: "AIを使うときに大切なことは？",
-    choices: ["答えを必ず確認する", "何も確認しない", "個人情報を全部入れる", "常に信じる"],
-    answer: "答えを必ず確認する"
+    question:"AIの回答で重要なことは？",
+    choices:[
+      "必ず確認する",
+      "全部信じる",
+      "誰にも見せない",
+      "削除する"
+    ],
+    answer:"必ず確認する"
+  },
+
+  {
+    question:"AIで翻訳を行う技術は？",
+    choices:["機械翻訳","電子翻訳","高速翻訳","瞬間翻訳"],
+    answer:"機械翻訳"
+  },
+
+  {
+    question:"音声を文字に変換するAIは？",
+    choices:["音声認識","画像認識","顔認識","温度認識"],
+    answer:"音声認識"
+  },
+
+  {
+    question:"AIで顔を判別する技術は？",
+    choices:["顔認識","空間認識","画像変換","映像化"],
+    answer:"顔認識"
+  },
+
+  {
+    question:"AIでおすすめ商品を表示する仕組みは？",
+    choices:["レコメンド","スクロール","ストリーミング","レンダリング"],
+    answer:"レコメンド"
+  },
+
+  {
+    question:"教師あり学習で必要なものは？",
+    choices:["正解データ","料理本","動画","広告"],
+    answer:"正解データ"
+  },
+
+  {
+    question:"AIが得意なことは？",
+    choices:[
+      "大量データ分析",
+      "睡眠",
+      "運動",
+      "散歩"
+    ],
+    answer:"大量データ分析"
+  },
+
+  {
+    question:"AIが苦手なことは？",
+    choices:[
+      "感情理解の完全再現",
+      "計算",
+      "検索",
+      "分類"
+    ],
+    answer:"感情理解の完全再現"
+  },
+
+  {
+    question:"AI開発でよく使われる言語は？",
+    choices:["Python","HTML","CSS","PowerPoint"],
+    answer:"Python"
+  },
+
+  {
+    question:"ニューラルネットワークは何を参考にした？",
+    choices:["人間の脳","車","飛行機","海"],
+    answer:"人間の脳"
+  },
+
+  {
+    question:"AIが画像を分析する技術は？",
+    choices:["画像認識","音声認識","温度認識","感情削除"],
+    answer:"画像認識"
+  },
+
+  {
+    question:"AIチャットの例は？",
+    choices:["ChatGPT","Excel","Word","Paint"],
+    answer:"ChatGPT"
+  },
+
+  {
+    question:"AIが自動で文章を書くことを何という？",
+    choices:["自然言語生成","画像変換","音声出力","自動保存"],
+    answer:"自然言語生成"
+  },
+
+  {
+    question:"AIで重要視される倫理問題は？",
+    choices:["偏見","睡眠不足","色","天気"],
+    answer:"偏見"
+  },
+
+  {
+    question:"AIの学習結果を改善することを？",
+    choices:["最適化","削除","停止","圧縮"],
+    answer:"最適化"
+  },
+
+  {
+    question:"ディープラーニングとは？",
+    choices:[
+      "深層学習",
+      "深海探索",
+      "深夜勉強",
+      "高速通信"
+    ],
+    answer:"深層学習"
+  },
+
+  {
+    question:"AIが会話を理解する分野は？",
+    choices:["自然言語処理","画像加工","動画編集","音楽制作"],
+    answer:"自然言語処理"
+  },
+
+  {
+    question:"AI画像生成で有名なものは？",
+    choices:["Stable Diffusion","Excel","Photoshop","Zoom"],
+    answer:"Stable Diffusion"
+  },
+
+  {
+    question:"AIが学習しすぎる問題を？",
+    choices:["過学習","超学習","高速化","最小化"],
+    answer:"過学習"
+  },
+
+  {
+    question:"AIを使う時に注意することは？",
+    choices:[
+      "個人情報を入れすぎない",
+      "何でも入力する",
+      "電源を抜く",
+      "毎回消す"
+    ],
+    answer:"個人情報を入れすぎない"
+  },
+
+  {
+    question:"AIで動画を作る技術は？",
+    choices:["動画生成AI","録画AI","通信AI","保存AI"],
+    answer:"動画生成AI"
+  },
+
+  // ↓ここから追加用（100問まで増やせる）
+
+  {
+    question:"AIがチェスで人間に勝利した有名事例は？",
+    choices:["Deep Blue","Windows","Linux","Safari"],
+    answer:"Deep Blue"
+  },
+
+  {
+    question:"AIで自動運転に使われる技術は？",
+    choices:["画像認識","掃除","翻訳","圧縮"],
+    answer:"画像認識"
+  },
+
+  {
+    question:"AIが苦手になりやすいものは？",
+    choices:["未知の状況","大量データ","計算","検索"],
+    answer:"未知の状況"
+  },
+
+  {
+    question:"AIの回答品質を上げる工夫は？",
+    choices:["良いプロンプトを書く","適当に入力","短くする","消す"],
+    answer:"良いプロンプトを書く"
+  },
+
+  {
+    question:"AIで使われるGPUは何のため？",
+    choices:["高速計算","掃除","録音","印刷"],
+    answer:"高速計算"
   }
+
 ];
+
+// =======================
+// 30問だけランダム抽出
+// =======================
+
+const quizData = allQuizData
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 30);
+
+console.log("出題数:", quizData.length);
+
+
 
 let currentQuestion = 0;
 let score = 0;
@@ -166,75 +426,128 @@ const choicesEl = document.getElementById("choices");
 const nextBtn = document.getElementById("nextBtn");
 const restartBtn = document.getElementById("restartBtn");
 const scoreText = document.getElementById("scoreText");
+const resultMessage = document.getElementById("resultMessage");
 
-function loadQuestion() {
+function loadQuestion(){
+
   answered = false;
+
   nextBtn.style.display = "none";
+
+  resultMessage.textContent = "";
+  resultMessage.className = "";
+
   choicesEl.innerHTML = "";
 
   const quiz = quizData[currentQuestion];
-  questionEl.textContent = `Q${currentQuestion + 1}. ${quiz.question}`;
+
+  questionEl.textContent =
+    `Q${currentQuestion + 1}. ${quiz.question}`;
 
   quiz.choices.forEach(choice => {
+
     const button = document.createElement("button");
+
     button.textContent = choice;
+
     button.onclick = () => checkAnswer(button, choice);
+
     choicesEl.appendChild(button);
+
   });
 
   scoreText.textContent = `スコア：${score}`;
 }
 
-function checkAnswer(button, choice) {
-  if (answered) return;
+function checkAnswer(button, choice){
+
+  if(answered) return;
+
   answered = true;
 
-  const correctAnswer = quizData[currentQuestion].answer;
-  const buttons = document.querySelectorAll(".choices button");
+  const correctAnswer =
+    quizData[currentQuestion].answer;
+
+  const buttons =
+    document.querySelectorAll(".choices button");
 
   buttons.forEach(btn => {
-    if (btn.textContent === correctAnswer) {
+
+    if(btn.textContent === correctAnswer){
       btn.classList.add("correct");
     }
+
   });
 
-  if (choice === correctAnswer) {
+  if(choice === correctAnswer){
+
     score++;
+
     button.classList.add("correct");
+
+    resultMessage.textContent = "⭕ 正解！";
+    resultMessage.classList.add("success");
+
   } else {
+
     button.classList.add("wrong");
+
+    resultMessage.textContent =
+      `❌ 不正解！ 正解は「${correctAnswer}」`;
+    resultMessage.classList.add("fail");
   }
 
   scoreText.textContent = `スコア：${score}`;
+
   nextBtn.style.display = "inline-block";
 }
 
 nextBtn.onclick = () => {
+
   currentQuestion++;
 
-  if (currentQuestion < quizData.length) {
+  if(currentQuestion < quizData.length){
+
     loadQuestion();
+
   } else {
+
     showResult();
   }
 };
 
-function showResult() {
-  questionEl.textContent = `終了！あなたのスコアは ${quizData.length}問中 ${score}問正解です。`;
+function showResult(){
+
+  questionEl.textContent =
+    `クイズ終了！`;
+
   choicesEl.innerHTML = "";
 
+  resultMessage.innerHTML =
+    `あなたのスコアは<br><br>
+     ${quizData.length}問中
+     ${score}問正解！`;
+
+  resultMessage.className = "success";
+
   nextBtn.style.display = "none";
+
   restartBtn.style.display = "inline-block";
 }
 
 restartBtn.onclick = () => {
+
   currentQuestion = 0;
   score = 0;
+
   restartBtn.style.display = "none";
+
   loadQuestion();
 };
 
 loadQuestion();
+
+</script>
 </script>
 
 </body>
